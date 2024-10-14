@@ -6,7 +6,7 @@ export interface User {
   mail: string;
   password: string;
   comment: string;    // Este campo es la "Biografía"
-  experiences?: Experiencia[];  // Añadir el campo experiences, opcional, que es un array de experiencias
+  experiencies?: Experiencia[];  // Añadir el campo experiences, opcional, que es un array de experiencias
 }
 
 

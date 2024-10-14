@@ -1,4 +1,4 @@
-<div class="container"> 
+<div class="container">
   <!-- Formulario a la izquierda -->
   <div class="form-container">
     <h1>{{ indiceEdicion !== null ? 'Editar usuario' : 'Agregar un nuevo usuario' }}</h1>
@@ -95,40 +95,26 @@
 
         <!-- Detalles del usuario -->
         <div *ngIf="desplegado[i]" class="user-details">
-          <p><strong>Email:</strong> {{ usuario.mail | maskEmail}}</p>
-           <!-- Contraseña con visibilidad controlada -->
-           <p><strong>Contraseña:</strong>
+          <p><strong>Email:</strong> {{ usuario.mail | maskEmail }}</p>
+          <p><strong>Contraseña:</strong>
             <span *ngIf="mostrarPassword[i]">{{ usuario.password }}</span>
             <span *ngIf="!mostrarPassword[i]">********</span>
           </p>
-          <!-- Biografía con lógica de truncado y leer más -->
           <p><strong>Biografía:</strong>
             {{ desplegarBiografia[i] ? usuario.comment : (usuario.comment | truncate: 10) }}
           </p>
-
-          <!-- Botón para alternar entre mostrar más o menos en la biografía -->
           <button (click)="toggleBiografia(i)" class="leer-mas">
             {{ desplegarBiografia[i] ? 'Leer menos' : 'Leer más' }}
-          </button>        
+          </button>
+
+          <p><strong>Experiencias:</strong></p>
+          <ul>
+            <li *ngFor="let experiencia of usuario.experiencies">
+              {{ experiencia.description }} <!-- Mostrar la descripción de la experiencia -->
+            </li>
+          </ul>
 
           <button (click)="prepararEdicion(usuario, i)" class="modificar">Modificar</button>
-
-          <!-- Botón para ver las experiencias -->
-          <button *ngIf="usuario._id" (click)="toggleExperiencias(usuario._id, i)" class="ver-experiencias">
-              {{ desplegado[i] ? 'Ocultar Experiencias' : 'Ver Experiencias' }}
-          </button>
-          <!-- Desplegable de experiencias -->
-            <div *ngIf="desplegado[i] && usuario.experiences?.length">
-              <h4>Experiencias de {{ usuario.name }}:</h4>
-              <ul>
-                <li *ngFor="let exp of usuario.experiences">
-                  Descripción: {{ exp.description }}
-                </li>
-              </ul>
-            </div>
-            <div *ngIf="desplegado[i] && !usuario.experiences?.length">
-              <p>Este usuario no tiene experiencias.</p>
-            </div>
         </div>
       </li>
     </ul>

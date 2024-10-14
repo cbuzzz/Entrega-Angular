@@ -30,6 +30,9 @@ export class UserService {
   deleteUserById(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  // Actualizar el array de experiencias de un usuario
+  updateUserExperiences(userId: string, experienceId: string): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${userId}/addExperience`, { experienceId });
+  }
 }
-
-

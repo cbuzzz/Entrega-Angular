@@ -48,7 +48,7 @@ export class ExperienciaComponent implements OnInit {
         console.error('Error al obtener las experiencias:', error);
       }
     );
-  }
+}
 
   // Obtener la lista de usuarios desde la API
   getUsers(): void {

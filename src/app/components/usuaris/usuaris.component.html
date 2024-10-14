@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container"> 
   <!-- Formulario a la izquierda -->
   <div class="form-container">
     <h1>{{ indiceEdicion !== null ? 'Editar usuario' : 'Agregar un nuevo usuario' }}</h1>
@@ -103,7 +103,6 @@
           </p>
           <!-- Biografía con lógica de truncado y leer más -->
           <p><strong>Biografía:</strong>
-            <!-- Si desplegarBiografia[i] es verdadero, muestra todo, si no, trunca a 10 caracteres -->
             {{ desplegarBiografia[i] ? usuario.comment : (usuario.comment | truncate: 10) }}
           </p>
 
@@ -113,6 +112,23 @@
           </button>        
 
           <button (click)="prepararEdicion(usuario, i)" class="modificar">Modificar</button>
+
+          <!-- Botón para ver las experiencias -->
+          <button *ngIf="usuario._id" (click)="toggleExperiencias(usuario._id, i)" class="ver-experiencias">
+              {{ desplegado[i] ? 'Ocultar Experiencias' : 'Ver Experiencias' }}
+          </button>
+          <!-- Desplegable de experiencias -->
+            <div *ngIf="desplegado[i] && usuario.experiences?.length">
+              <h4>Experiencias de {{ usuario.name }}:</h4>
+              <ul>
+                <li *ngFor="let exp of usuario.experiences">
+                  Descripción: {{ exp.description }}
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="desplegado[i] && !usuario.experiences?.length">
+              <p>Este usuario no tiene experiencias.</p>
+            </div>
         </div>
       </li>
     </ul>

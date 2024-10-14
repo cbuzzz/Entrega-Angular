@@ -1,0 +1,23 @@
+<div class="search-container">
+    <h2>Buscar Experiencias por Usuario</h2>
+    
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchTerm" placeholder="Introduce el nombre de usuario" />
+      <button (click)="searchUserExperiencias()" class="search-button">Buscar</button>
+    </div>
+  
+    <div *ngIf="experiencias.length > 0" class="result-container">
+      <h3>Experiencias de {{ searchTerm }}:</h3>
+      <ul class="experiencia-list">
+        <li *ngFor="let exp of experiencias" class="experiencia-item">
+          <p><strong>Descripción:</strong> {{ exp.description }}</p>
+          <p><strong>Participantes:</strong> {{ getParticipantNames(exp.participants) }}</p>
+        </li>
+      </ul>
+    </div>
+  
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  

@@ -5,7 +5,8 @@ import { User } from '../../models/user.model'; // Importar el modelo User desde
 import { UserService } from '../../services/user.service'; // Importar el servicio UserService desde la subcarpeta services
 import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { MaskEmailPipe } from '../../pipes/maskEmail.pipe';
-
+import { ExperienciaService } from '../../services/experiencia.service'; // Importar el servicio ExperienciaService
+import { Experiencia } from '../../models/experiencia.model';  // Modelo de experiencia
 
 @Component({
   selector: 'app-usuaris',
@@ -13,10 +14,10 @@ import { MaskEmailPipe } from '../../pipes/maskEmail.pipe';
   styleUrls: ['./usuaris.component.css'],
   standalone: true,  // Esto convierte el componente en independiente
   imports: [CommonModule, FormsModule, TruncatePipe, MaskEmailPipe]  // Importar CommonModule y FormsModule
-
 })
 export class UsuarisComponent implements OnInit {
   usuarios: User[] = []; // Lista de usuarios con tipado User
+  experienciasPorUsuario: { [key: string]: Experiencia[] } = {};  // Almacena las experiencias de cada usuario por su _id
   desplegado: boolean[] = []; // Controla si el desplegable de cada usuario está abierto o cerrado
   desplegarBiografia: boolean[] = [];
   mostrarPassword: boolean[] = []; // Array para controlar la visibilidad de la contraseña
@@ -33,7 +34,7 @@ export class UsuarisComponent implements OnInit {
   indiceEdicion: number | null = null; // Almacena el índice del usuario en edición
   formSubmitted: boolean = false; // Indica si se ha enviado el formulario
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private experienciaService: ExperienciaService) {}
 
   ngOnInit(): void {
     // Cargar usuarios desde el UserService
@@ -87,27 +88,26 @@ export class UsuarisComponent implements OnInit {
     // Limpiar los campos del formulario y restablecer su estado
     this.resetForm(userForm);
   }
-  
 
   // Función para limpiar el formulario
-  resetForm(userForm: NgForm): void { // Aceptar userForm como parámetro
+  resetForm(userForm: NgForm): void {
     this.nuevoUsuario = {
       name: '',
-      mail: '', // Limpiar el campo email
+      mail: '', 
       password: '',
       comment: ''
     };
-    this.confirmarPassword = ''; // Reiniciar el campo de confirmar contraseña
-    this.formSubmitted = false; // Restablecer el estado del formulario para no mostrar errores
-    userForm.resetForm(); // Reiniciar el formulario en la vista
+    this.confirmarPassword = '';
+    this.formSubmitted = false; 
+    userForm.resetForm(); 
   }
 
   // Función para preparar la edición de un usuario
   prepararEdicion(usuario: User, index: number): void {
-    this.usuarioEdicion = { ...usuario }; // Clonar el usuario para la edición
-    this.nuevoUsuario = { ...usuario }; // Cargar los datos del usuario en el formulario
-    this.indiceEdicion = index; // Almacenar el índice del usuario en edición
-    this.desplegado[index] = true; // Abrir el desplegable del usuario que se está editando
+    this.usuarioEdicion = { ...usuario };
+    this.nuevoUsuario = { ...usuario };
+    this.indiceEdicion = index; 
+    this.desplegado[index] = true; 
   }
 
   // Función para eliminar un usuario usando el _id
@@ -121,7 +121,6 @@ export class UsuarisComponent implements OnInit {
     }
   
     if (confirm(`¿Estás seguro de que deseas eliminar a ${usuarioAEliminar.name}?`)) {
-      // Eliminar a través del UserService usando el _id como identificador
       this.userService.deleteUserById(usuarioAEliminar._id).subscribe(
         response => {
           console.log('Usuario eliminado:', response);
@@ -135,24 +134,32 @@ export class UsuarisComponent implements OnInit {
       );
     }
   }
-  
 
   // Función para alternar la visualización del desplegable
   toggleDesplegable(index: number): void {
     this.desplegado[index] = !this.desplegado[index];
   }
 
+  // Obtener las experiencias de un usuario y desplegar la lista
+  toggleExperiencias(userId: string, index: number): void {
+    if (!this.desplegado[index]) {
+      this.experienciaService.getExperienciasByUser(userId).subscribe((experiencias: Experiencia[]) => {
+        this.usuarios[index] = { ...this.usuarios[index], experiences: experiencias };  // Asigna las experiencias al usuario
+        this.desplegado[index] = true;
+      });
+    } else {
+      this.desplegado[index] = false;
+    }
+  }
+  
+
   // Método para alternar entre mostrar más o menos texto
   toggleBiografia(index: number) {
-    // Cambia el estado entre desplegado y no desplegado
     this.desplegarBiografia[index] = !this.desplegarBiografia[index];
   }
 
   // Función para alternar la visibilidad de la contraseña
   togglePassword(index: number): void {
-    this.mostrarPassword[index] = !this.mostrarPassword[index]; // Cambiamos entre true y false
+    this.mostrarPassword[index] = !this.mostrarPassword[index];
   }
-
 }
-
-

@@ -14,7 +14,14 @@ export class ExperienciaService {
   // Obtener la lista de experiencias
   getExperiencias(): Observable<Experiencia[]> {
     return this.http.get<Experiencia[]>(this.apiUrl);
+  }  
+
+  // Obtener experiencias asociadas a un usuario específico por su ID como owner o participant
+  getExperienciasByUser(userId: string): Observable<Experiencia[]> {
+    // Consulta para obtener experiencias como owner o participant
+    return this.http.get<Experiencia[]>(`${this.apiUrl}?participant=${userId}&owner=${userId}`);
   }
+
 
   // Agregar una nueva experiencia al backend
   addExperiencia(newExperience: Experiencia): Observable<Experiencia> {
